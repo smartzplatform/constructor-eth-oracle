@@ -169,7 +169,7 @@ class Constructor(ConstructorInstance):
         elif dataType == 'bytes':
             dataType += str(fields_vals['bytesSize'])
 
-        if fields_vals['isArray'] == True:
+        if 'isArray' in fields_vals and fields_vals['isArray'] == True:
             dataType += '[]'
 
         owners_code = 'address[] memory result = new address[]({});\n'.format(len(fields_vals['owners']))
@@ -267,8 +267,6 @@ class Constructor(ConstructorInstance):
                 'description': 'Update data (Need quorum of of owners)',
                 'inputs': [{
                     'title': 'New data',
-                    'minItems': 0,
-                    'maxItems': 250,
                 }, {
                     'title': 'Nonce'
                 }],
