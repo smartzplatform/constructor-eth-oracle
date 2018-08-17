@@ -192,14 +192,14 @@ class Constructor(ConstructorInstance):
     def post_construct(self, fields_vals, abi_array):
 
         function_titles = {
-            'Price': {
+            'price': {
                 'title': 'Data price',
                 'description': 'Cost of one call of getData function',
                 'ui:widget': 'ethCount',
                 'sorting_order': 10
             },
 
-            'LastDataUpdate': {
+            'lastDataUpdate': {
                 'title': 'Last update time',
                 'description': 'Time of last data update',
                 'ui:widget': 'unixTime',
@@ -209,7 +209,7 @@ class Constructor(ConstructorInstance):
                 'sorting_order': 20
             },
 
-            'Nonce': {
+            'nonce': {
                 'title': 'Current nonce',
                 'description': 'This nonce need for number of functions',
                 'sorting_order': 30
@@ -362,7 +362,7 @@ class Constructor(ConstructorInstance):
         return {
             "result": "success",
             'function_specs': function_titles,
-            'dashboard_functions': ['Price', 'LastDataUpdate', 'm_numOwners', 'm_multiOwnedRequired']
+            'dashboard_functions': ['price', 'lastDataUpdate', 'm_numOwners', 'm_multiOwnedRequired']
         }
 
 
@@ -709,19 +709,17 @@ contract Oracle is multiowned {
     event Withdraw (address receiver, uint256 amount);
     event ChangePrice (uint256 price);
 
-    uint256 public Price;
-    uint256 public LastDataUpdate;
-    uint256 public Nonce;
+    uint256 public price;
+    uint256 public lastDataUpdate;
+    uint256 public nonce;
 
-    %dataType% internal Data;
+    %dataType% internal data;
 
-    function Oracle(uint signaturesRequired, uint256 price)
+    function Oracle(uint _signaturesRequired, uint256 _price)
         public
-        multiowned(getInitialOwners(), signaturesRequired)
+        multiowned(getInitialOwners(), _signaturesRequired)
     {
-        Price = price;
-        LastDataUpdate = 0;
-        Nonce = 0;
+        price = _price;
     }
 
     function getInitialOwners() private pure returns (address[]) {
@@ -729,57 +727,56 @@ contract Oracle is multiowned {
         return result;
     }
 
-    modifier onlyForNonce(uint256 nonce)
+    modifier onlyForNonce(uint256 _nonce)
     {
-        require(Nonce == nonce);
+        require(nonce == _nonce);
         _;
     }
 
     function newNonce()
         private
     {
-        Nonce = Nonce + 1;
+        nonce = nonce + 1;
     }
 
 
-    function setPrice(uint256 price, uint256 nonce)
+    function setPrice(uint256 _price, uint256 _nonce)
         public
-        onlyForNonce(nonce)
+        onlyForNonce(_nonce)
         onlymanyowners(keccak256(msg.data))
     {
-        Price = price;
-        ChangePrice(price);
+        price = _price;
+        ChangePrice(_price);
         newNonce();
     }
 
-    function updateData(%dataType% data, uint256 nonce)
+    function updateData(%dataType% _data, uint256 _nonce)
         public
-        onlyForNonce(nonce)
+        onlyForNonce(_nonce)
         onlymanyowners(keccak256(msg.data))
     {
-        Data = data;
-        LastDataUpdate = now;
-        DataUpdate(LastDataUpdate);
+        data = _data;
+        lastDataUpdate = now;
+        DataUpdate(lastDataUpdate);
         newNonce();
     }
 
-    function withdraw(address receiver, uint256 amount)
+    function withdraw(address _receiver, uint256 _amount)
         public
         onlymanyowners(keccak256(msg.data))
     {
-        require(amount <= address(this).balance);
-        receiver.transfer(amount);
-        Withdraw(receiver, amount);
+        require(_amount <= address(this).balance);
+        _receiver.transfer(_amount);
+        Withdraw(_receiver, _amount);
     }
-
 
     function getData()
         public
         payable
         returns (%dataType%)
     {
-        require(msg.value == Price);
-        return Data;
+        require(msg.value == price);
+        return data;
     }
 }
 

@@ -40,14 +40,14 @@ contract('Oracle', function(accounts) {
         let inst = await newInstance(defaultArgs);
         let data = (Math.random() * 100000) | 0;
 
-        let nonce = await inst.Nonce({from: accts.anyone});
+        let nonce = await inst.nonce({from: accts.anyone});
 
         await inst.updateData(data, nonce, {from: accts.owners[0]});
         await inst.updateData(data, nonce, {from: accts.owners[1]});
         await inst.getData.call({from: accts.anyone, value: web3.toWei('1')})
             .should.eventually.be.bignumber.equal(data);
 
-        await inst.Nonce({from: accts.anyone})
+        await inst.nonce({from: accts.anyone})
             .should.eventually.be.bignumber.equal(nonce + 1);
     });
 
@@ -64,7 +64,7 @@ contract('Oracle', function(accounts) {
         let inst = await newInstance(defaultArgs);
         let data = (Math.random() * 100000) | 0;
 
-        let nonce = await inst.Nonce({from: accts.anyone});
+        let nonce = await inst.nonce({from: accts.anyone});
 
         expectThrow(inst.updateData(data, nonce, {from: accts.anyone}));
     });
@@ -74,11 +74,11 @@ contract('Oracle', function(accounts) {
         let inst = await newInstance(defaultArgs);
         let price = web3.toWei('5');
 
-        let nonce = await inst.Nonce({from: accts.anyone});
+        let nonce = await inst.nonce({from: accts.anyone});
 
         await inst.setPrice(price, nonce, {from: accts.owners[0]});
         await inst.setPrice(price, nonce, {from: accts.owners[1]});
-        await inst.Price({from: accts.anyone})
+        await inst.price({from: accts.anyone})
             .should.eventually.be.bignumber.equal(price);
     });
 
@@ -95,7 +95,7 @@ contract('Oracle', function(accounts) {
         let inst = await newInstance(defaultArgs);
         let price = web3.toWei('5');
 
-        let nonce = await inst.Nonce({from: accts.anyone});
+        let nonce = await inst.nonce({from: accts.anyone});
 
         await expectThrow(inst.setPrice(price, nonce, {from: accts.anyone}));
     });
@@ -105,7 +105,7 @@ contract('Oracle', function(accounts) {
         let inst = await newInstance(defaultArgs);
         let data = (Math.random() * 100000) | 0;
 
-        let nonce = await inst.Nonce({from: accts.anyone});
+        let nonce = await inst.nonce({from: accts.anyone});
 
         await inst.updateData(data, nonce, {from: accts.owners[0]});
         await inst.updateData(data, nonce, {from: accts.owners[1]});
@@ -117,7 +117,7 @@ contract('Oracle', function(accounts) {
         let inst = await newInstance(defaultArgs);
         let data = (Math.random() * 100000) | 0;
 
-        let nonce = await inst.Nonce({from: accts.anyone});
+        let nonce = await inst.nonce({from: accts.anyone});
 
         await inst.updateData(data, nonce, {from: accts.owners[0]});
         await inst.updateData(data, nonce, {from: accts.owners[1]});
@@ -129,7 +129,7 @@ contract('Oracle', function(accounts) {
         let inst = await newInstance(defaultArgs);
         let data = (Math.random() * 100000) | 0;
 
-        let nonce = await inst.Nonce({from: accts.anyone});
+        let nonce = await inst.nonce({from: accts.anyone});
 
         await inst.updateData(data, nonce, {from: accts.owners[0]});
         await inst.updateData(data, nonce, {from: accts.owners[1]});
@@ -142,7 +142,7 @@ contract('Oracle', function(accounts) {
         let inst = await newInstance(defaultArgs);
         let data = (Math.random() * 100000) | 0;
 
-        let nonce = await inst.Nonce({from: accts.anyone});
+        let nonce = await inst.nonce({from: accts.anyone});
 
         await inst.updateData(data, nonce, {from: accts.owners[0]});
         await inst.updateData(data, nonce, {from: accts.owners[1]});
@@ -157,7 +157,7 @@ contract('Oracle', function(accounts) {
         let inst = await newInstance(defaultArgs);
         let data = (Math.random() * 100000) | 0;
 
-        let nonce = await inst.Nonce({from: accts.anyone});
+        let nonce = await inst.nonce({from: accts.anyone});
 
         await inst.updateData(data, nonce, {from: accts.owners[0]});
         await inst.updateData(data, nonce, {from: accts.owners[1]});

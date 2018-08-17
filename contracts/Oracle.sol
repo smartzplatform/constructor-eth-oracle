@@ -8,71 +8,68 @@ contract Oracle is multiowned {
     event Withdraw (address receiver, uint256 amount);
     event ChangePrice (uint256 price);
 
-    uint256 public Price;
-    uint256 public LastDataUpdate;
-    uint256 public Nonce;
+    uint256 public price;
+    uint256 public lastDataUpdate;
+    uint256 public nonce;
 
-    uint256 internal Data;
+    uint256 internal data;
 
-    constructor(address[] owners, uint signaturesRequired, uint256 price)
+    constructor(address[] _owners, uint _signaturesRequired, uint256 _price)
         public
-        multiowned(owners, signaturesRequired)
+        multiowned(_owners, _signaturesRequired)
     {
-        Price = price;
-        LastDataUpdate = 0;
-        Nonce = 0;
+        price = _price;
     }
 
-    modifier onlyForNonce(uint256 nonce)
+    modifier onlyForNonce(uint256 _nonce)
     {
-        require(Nonce == nonce);
+        require(nonce == _nonce);
         _;
     }
 
     function newNonce()
         private
     {
-        Nonce = Nonce + 1;
+        nonce = nonce + 1;
     }
 
 
-    function setPrice(uint256 price, uint256 nonce)
+    function setPrice(uint256 _price, uint256 _nonce)
         public
-        onlyForNonce(nonce)
+        onlyForNonce(_nonce)
         onlymanyowners(keccak256(msg.data))
     {
-        Price = price;
-        ChangePrice(price);
+        price = _price;
+        ChangePrice(_price);
         newNonce();
     }
 
-    function updateData(uint256 data, uint256 nonce)
+    function updateData(uint256 _data, uint256 _nonce)
         public
-        onlyForNonce(nonce)
+        onlyForNonce(_nonce)
         onlymanyowners(keccak256(msg.data))
     {
-        Data = data;
-        LastDataUpdate = now;
-        DataUpdate(LastDataUpdate);
+        data = _data;
+        lastDataUpdate = now;
+        DataUpdate(lastDataUpdate);
         newNonce();
     }
 
-    function withdraw(address receiver, uint256 amount)
+    function withdraw(address _receiver, uint256 _amount)
         public
         onlymanyowners(keccak256(msg.data))
     {
-        require(amount <= address(this).balance);
-        receiver.transfer(amount);
-        Withdraw(receiver, amount);
+        require(_amount <= address(this).balance);
+        _receiver.transfer(_amount);
+        Withdraw(_receiver, _amount);
     }
-
 
     function getData()
         public
         payable
         returns (uint256)
     {
-        require(msg.value == Price);
-        return Data;
+        require(msg.value == price);
+        return data;
     }
 }
