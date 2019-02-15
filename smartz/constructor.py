@@ -269,8 +269,6 @@ class Constructor(ConstructorInstance):
                 'description': 'Update data (Need quorum of owners)',
                 'inputs': [{
                     'title': 'New data',
-                    'minItems': 1,
-                    'maxItems': self.__class__.MAX_UPDATES
                 }, {
                     'title': 'Nonce'
                 }],
@@ -362,6 +360,10 @@ class Constructor(ConstructorInstance):
                 'sorting_order': 190
             },
         }
+
+        if 'isArray' in fields_vals and fields_vals['isArray'] == True:
+            function_titles['updateData']['inputs'][0]["minItems"] = 1
+            function_titles['updateData']['inputs'][0]['maxItems'] = self.__class__.MAX_UPDATES
 
         return {
             "result": "success",
