@@ -4,6 +4,8 @@ from smartz.api.constructor_engine import ConstructorInstance
 
 class Constructor(ConstructorInstance):
 
+    MAX_UPDATES = 100
+
     def get_version(self):
         return {
             "result": "success",
@@ -264,9 +266,11 @@ class Constructor(ConstructorInstance):
 
             'updateData': {
                 'title': 'Update data',
-                'description': 'Update data (Need quorum of of owners)',
+                'description': 'Update data (Need quorum of owners)',
                 'inputs': [{
                     'title': 'New data',
+                    'minItems': 1,
+                    'maxItems': self.__class__.MAX_UPDATES
                 }, {
                     'title': 'Nonce'
                 }],
